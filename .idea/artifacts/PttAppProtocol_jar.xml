@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PttAppProtocol:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PttAppProtocol_jar</output-path>
+    <root id="archive" name="PttAppProtocol.jar">
+      <element id="module-output" name="PttAppProtocol" />
+    </root>
+  </artifact>
+</component>
