@@ -13,6 +13,7 @@ public class Ack extends ProtocolBase {
 
     /** default ctor */
     public Ack(){
+        super(ProtocolBase.PTYPE_ACK);
     }
 
     /** ctor, initialize from a received payload

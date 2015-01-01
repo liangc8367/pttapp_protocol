@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 public class Registration extends ProtocolBase {
 
     public Registration(){
+        super(ProtocolBase.PTYPE_REGISTRATION);
     }
 
     public Registration(ByteBuffer payload){

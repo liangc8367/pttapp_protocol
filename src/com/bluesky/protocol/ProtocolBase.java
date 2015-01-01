@@ -11,17 +11,22 @@ public class ProtocolBase {
     /** sequence # */
     public static final int OFFSET_SEQ         = 0;
     /** packet type */
-    public static final int PTYPE_INVALID      = 0;
-    public static final int PTYPE_ACK          = 1;
-    public static final int PTYPE_REGISTRATION = 3;
-    public static final int PTYPE_CALL_INIT    = 4;
-    public static final int PTYPE_CALL_DATA    = 5;
-    public static final int PTYPE_CALL_TERM    = 6;
+    public static final short PTYPE_INVALID      = 0;
+    public static final short PTYPE_ACK          = 1;
+    public static final short PTYPE_REGISTRATION = 3;
+    public static final short PTYPE_CALL_INIT    = 4;
+    public static final short PTYPE_CALL_DATA    = 5;
+    public static final short PTYPE_CALL_TERM    = 6;
 
     public static final int OFFSET_PTYPE       = 2;
 
-    public ProtocolBase(){
+    /** ctor, default */
+    public ProtocolBase(short type){
+        mType = type;
+    }
 
+    public ProtocolBase(){
+        this(PTYPE_INVALID);
     }
 
     /** ctor using received payload
