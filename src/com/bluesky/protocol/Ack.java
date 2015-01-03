@@ -46,7 +46,8 @@ public class Ack extends ProtocolBase {
     public void serialize(ByteBuffer payload){
         super.serialize(payload);
         payload.putShort(mAckType);
-        mOrigPacket.serialize(payload);
+        payload.putShort(mOrigPacket.getSequence());
+        payload.putShort(mOrigPacket.getType());
     }
 
     @Override
