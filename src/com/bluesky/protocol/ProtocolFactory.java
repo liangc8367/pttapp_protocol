@@ -19,8 +19,22 @@ public class ProtocolFactory {
                 break;
             }
             case ProtocolBase.PTYPE_REGISTRATION: {
-                Registration p = new Registration();
-                p.unserialize(payload);
+                Registration p = new Registration(payload);
+                proto = p;
+                break;
+            }
+            case ProtocolBase.PTYPE_CALL_INIT: {
+                CallInit p = new CallInit(payload);
+                proto = p;
+                break;
+            }
+            case ProtocolBase.PTYPE_CALL_TERM: {
+                CallTerm p = new CallTerm(payload);
+                proto = p;
+                break;
+            }
+            case ProtocolBase.PTYPE_CALL_DATA: {
+                CallData p = new CallData(payload);
                 proto = p;
                 break;
             }

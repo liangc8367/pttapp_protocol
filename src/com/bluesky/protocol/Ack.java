@@ -11,10 +11,10 @@ public class Ack extends ProtocolBase {
 
     public static final int OFFSET_ACKTYPE      = 0;
 
-//    /** default ctor */
-//    public Ack(){
-//        super(ProtocolBase.PTYPE_ACK);
-//    }
+    /** default ctor */
+    private Ack(){
+        super(ProtocolBase.PTYPE_ACK);
+    }
 
     /** ctor, initialize from a received payload
      *

@@ -93,7 +93,8 @@ public class ProtocolBase {
         this.mSequence = mSequence;
     }
 
-    public void setType(short mType) {
+    /** private methods and members */
+    private void setType(short mType) {
         this.mType = mType;
     }
 
