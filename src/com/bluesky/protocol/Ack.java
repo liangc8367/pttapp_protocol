@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
  * Created by liangc on 29/12/14.
  */
 public class Ack extends ProtocolBase {
-    public static final int ACKTYPE_POSITIVE    = 1;
-    public static final int ACKTYPE_NEGATIVE    = 0;
+    public static final short ACKTYPE_POSITIVE    = 1;
+    public static final short ACKTYPE_NEGATIVE    = 0;
 
     public static final int OFFSET_ACKTYPE      = 0;
 
