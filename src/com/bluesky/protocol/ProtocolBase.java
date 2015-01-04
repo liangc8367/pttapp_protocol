@@ -64,13 +64,14 @@ public class ProtocolBase {
      *
      */
     public int getSize(){
-        return 2 * Short.SIZE / Byte.SIZE;
+        return getMySize();
     }
 
     public static short peepType(ByteBuffer payload){
         return payload.getShort(OFFSET_PTYPE);
     }
 
+    /** get size of unserialized version */
     public short getType(){
         return mType;
     }
@@ -82,10 +83,9 @@ public class ProtocolBase {
 
 
     public ByteBuffer getPayload(){
-        mPayload.position(getSize());
-        ByteBuffer payload = mPayload.slice();
-        mPayload.position(0);
-        return payload;
+        ByteBuffer payload = mPayload;
+        payload.position(getMySize());
+        return payload.slice();
     }
 
 
@@ -97,7 +97,11 @@ public class ProtocolBase {
         this.mType = mType;
     }
 
-    /** private members */
+    /** private methods and members */
+    private int getMySize(){
+        return 2 * Short.SIZE / Byte.SIZE;
+    }
+
     private short mSequence = 0;
 
     private short mType     = PTYPE_INVALID;

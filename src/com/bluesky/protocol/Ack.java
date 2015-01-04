@@ -11,10 +11,10 @@ public class Ack extends ProtocolBase {
 
     public static final int OFFSET_ACKTYPE      = 0;
 
-    /** default ctor */
-    public Ack(){
-        super(ProtocolBase.PTYPE_ACK);
-    }
+//    /** default ctor */
+//    public Ack(){
+//        super(ProtocolBase.PTYPE_ACK);
+//    }
 
     /** ctor, initialize from a received payload
      *
@@ -24,6 +24,11 @@ public class Ack extends ProtocolBase {
         unserialize(payload);
     }
 
+    /** ctor, shall only be used to instance Ack for reply
+     *
+     * @param positiveAck
+     * @param origPayload
+     */
     public Ack(boolean positiveAck, ByteBuffer origPayload){
         super(ProtocolBase.PTYPE_ACK);
         if(positiveAck) {

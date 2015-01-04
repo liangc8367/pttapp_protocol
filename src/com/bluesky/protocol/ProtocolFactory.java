@@ -14,8 +14,7 @@ public class ProtocolFactory {
         ProtocolBase proto;
         switch(protoType){
             case ProtocolBase.PTYPE_ACK: {
-                Ack p = new Ack();
-                p.unserialize(payload);
+                Ack p = new Ack(payload);
                 proto = p;
                 break;
             }
