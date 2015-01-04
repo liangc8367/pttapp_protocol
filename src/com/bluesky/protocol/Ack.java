@@ -25,6 +25,7 @@ public class Ack extends ProtocolBase {
     }
 
     public Ack(boolean positiveAck, ByteBuffer origPayload){
+        super(ProtocolBase.PTYPE_ACK);
         if(positiveAck) {
             mAckType = ACKTYPE_POSITIVE;
         } else {
