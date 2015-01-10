@@ -20,9 +20,10 @@ public class CallDataTest extends TestCase {
 
         long suid = 0xbadbeef001L;
         long target = 0x123456789aL;
+        short audioSeq  = (short) 0x321;
         short seq = (short)0xd123;
 
-        CallData callData = new CallData(target, suid, ByteBuffer.wrap(rawAudio));
+        CallData callData = new CallData(target, suid, audioSeq, ByteBuffer.wrap(rawAudio));
         callData.setSequence(seq);
 
         int sz = callData.getSize();
@@ -36,6 +37,7 @@ public class CallDataTest extends TestCase {
         assertEquals(seq, bproto.getSequence());
         assertEquals(suid, bproto.getSuid());
         assertEquals(target, bproto.getTargetId());
+        assertEquals(audioSeq, bproto.getAudioSeq());
 
         ByteBuffer audioBuf = bproto.getAudioData();
         assertEquals(audioBuf.limit(), rawAudioSz);

@@ -12,10 +12,11 @@ import java.nio.ByteBuffer;
  * Created by liangc on 04/01/15.
  */
 public class CallData extends ProtocolBase {
-    public CallData(long targetId, long suid, ByteBuffer audioData){
+    public CallData(long targetId, long suid, short audioSeq, ByteBuffer audioData){
         super(PTYPE_CALL_DATA);
         mTargetId = targetId;
         mSuid = suid;
+        mAudioSeq = audioSeq;
         mAudioData = audioData;
     }
 
@@ -24,7 +25,7 @@ public class CallData extends ProtocolBase {
     }
 
     private CallData(){
-        this(0L, 0L, null);
+        this(0L, 0L, (short)0, null);
     }
 
     @Override
@@ -33,6 +34,7 @@ public class CallData extends ProtocolBase {
         payload = super.getPayload();
         mTargetId = payload.getLong();
         mSuid = payload.getLong();
+        mAudioSeq = payload.getShort();
         mAudioData = payload.slice();
     }
 
@@ -41,6 +43,7 @@ public class CallData extends ProtocolBase {
         super.serialize(payload);
         payload.putLong(mTargetId);
         payload.putLong(mSuid);
+        payload.putShort(mAudioSeq);
         payload.put(mAudioData);
     }
 
@@ -48,6 +51,7 @@ public class CallData extends ProtocolBase {
     public int getSize() {
         return super.getSize()
                 + 2 * Long.SIZE / Byte.SIZE
+                + Short.SIZE / Byte.SIZE
                 + mAudioData.limit(); // mAudioData now in read-mode, i.e. limit is its # of elements
     }
 
@@ -59,13 +63,18 @@ public class CallData extends ProtocolBase {
         return mSuid;
     }
 
+    public short getAudioSeq(){
+        return mAudioSeq;
+    }
+
     public ByteBuffer getAudioData() {
         return mAudioData;
     }
 
     /** private members */
-    long mTargetId;
-    long mSuid;
+    long        mTargetId;
+    long        mSuid;
+    short       mAudioSeq;
     ByteBuffer  mAudioData;
 
 }
