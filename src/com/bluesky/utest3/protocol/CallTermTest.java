@@ -13,8 +13,9 @@ public class CallTermTest extends TestCase {
         long suid = 0xbadbeef001L;
         long target = 0x123456789aL;
         short seq = (short)0xd123;
+        short audioSeq = (short) 0x1199;
 
-        CallTerm callTerm = new CallTerm(target, suid);
+        CallTerm callTerm = new CallTerm(target, suid, audioSeq);
         callTerm.setSequence(seq);
 
         int sz = callTerm.getSize();
@@ -28,6 +29,8 @@ public class CallTermTest extends TestCase {
         assertEquals(seq, bproto.getSequence());
         assertEquals(suid, bproto.getSuid());
         assertEquals(target, bproto.getTargetId());
+        assertEquals(audioSeq, bproto.getAudioSeq());
 
+        System.out.print(callTerm);
     }
 }

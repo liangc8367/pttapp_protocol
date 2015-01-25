@@ -54,6 +54,11 @@ public class CallInit extends ProtocolBase {
         return mSuid;
     }
 
+    public String toString(){
+        return "CallInit:" + super.toString()
+                + ":" + Long.toHexString(mTargetId)
+                + ":" + Long.toHexString(mSuid);
+    }
     /** private members */
     long mTargetId;
     long mSuid;

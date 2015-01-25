@@ -41,6 +41,7 @@ public class AckTest extends TestCase {
         assertEquals(aProto.getOrigSeq(), origSeq);
         assertEquals(aProto.getOrigType(), ProtocolBase.PTYPE_REGISTRATION);
 
+        System.out.print(aProto);
     }
 
     public void testSerialize() throws Exception {

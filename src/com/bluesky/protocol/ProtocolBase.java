@@ -80,17 +80,22 @@ public class ProtocolBase {
         return mSequence;
     }
 
-
-
     public ByteBuffer getPayload(){
         ByteBuffer payload = mPayload;
         payload.position(getMySize());
         return payload.slice();
     }
 
-
     public void setSequence(short mSequence) {
         this.mSequence = mSequence;
+    }
+
+    public String toString (){
+        return Integer.toHexString(mSequence);
+    }
+
+    protected String toStringDetail(){
+        return toString() + ":" + Integer.toHexString(mType);
     }
 
     /** private methods and members */

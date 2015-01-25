@@ -82,6 +82,17 @@ public class Ack extends ProtocolBase {
         return mAckType;
     }
 
+    public String toString(){
+        char c;
+        if( mAckType == ACKTYPE_POSITIVE ){
+            c = 'P';
+        } else {
+            c = 'N';
+        }
+        return "ACK:" + super.toString() + ":" + c + ":"
+                + mOrigPacket.toStringDetail();
+    }
+
     private short mAckType  = ACKTYPE_NEGATIVE;     /// ack type
     private ProtocolBase    mOrigPacket = null;
 }

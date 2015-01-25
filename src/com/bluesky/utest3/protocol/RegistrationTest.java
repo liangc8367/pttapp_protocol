@@ -26,6 +26,8 @@ public class RegistrationTest extends TestCase {
 
         Registration bReg = (Registration)proto;
         assertEquals(bReg.getSUID(), suid);
+
+        System.out.print(reg.toString());
     }
 
     public void testSerialize() throws Exception {

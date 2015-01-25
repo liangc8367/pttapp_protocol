@@ -28,6 +28,10 @@ public class Registration extends ProtocolBase {
         payload.putLong(mSUID);
     }
 
+    public String toString(){
+        return super.toString() + ":" + Long.toHexString(mSUID);
+    }
+
     @Override
     public int getSize() {
         return super.getSize() + Long.SIZE / Byte.SIZE;

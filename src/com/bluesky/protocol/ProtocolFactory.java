@@ -1,5 +1,6 @@
 package com.bluesky.protocol;
 
+import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 
 /**
@@ -42,5 +43,10 @@ public class ProtocolFactory {
                 throw new IllegalArgumentException();
         }
         return proto;
+    }
+
+    /** unserialize protocol from received DatagramPacket */
+    static public ProtocolBase getProtocol(DatagramPacket packet){
+        return getProtocol(ByteBuffer.wrap(packet.getData(), packet.getOffset(), packet.getLength()));
     }
 }

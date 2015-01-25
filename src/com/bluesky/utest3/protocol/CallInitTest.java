@@ -29,6 +29,7 @@ public class CallInitTest extends TestCase {
         assertEquals(suid, bproto.getSuid());
         assertEquals(target, bproto.getTargetId());
 
+        System.out.print(callInit);
     }
 
     public void testSerialize() throws Exception {

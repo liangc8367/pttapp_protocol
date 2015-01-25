@@ -47,5 +47,6 @@ public class CallDataTest extends TestCase {
             assertEquals(rawAudio[i], audio[i]);
         }
 
+        System.out.print(callData);
     }
 }

@@ -11,10 +11,11 @@ import java.nio.ByteBuffer;
  * Created by liangc on 04/01/15.
  */
 public class CallTerm extends ProtocolBase{
-    public CallTerm(long targetId, long suid){
+    public CallTerm(long targetId, long suid, short audioSeq){
         super(PTYPE_CALL_TERM);
         mTargetId = targetId;
         mSuid = suid;
+        mAudioSeq = audioSeq;
     }
 
     public CallTerm(ByteBuffer payload){
@@ -22,7 +23,7 @@ public class CallTerm extends ProtocolBase{
     }
 
     private CallTerm(){
-        this(0L, 0L);
+        this(0L, 0L, (short)0);
     }
 
     @Override
@@ -31,6 +32,7 @@ public class CallTerm extends ProtocolBase{
         payload = super.getPayload();
         mTargetId = payload.getLong();
         mSuid = payload.getLong();
+        mAudioSeq = payload.getShort();
     }
 
     @Override
@@ -38,11 +40,12 @@ public class CallTerm extends ProtocolBase{
         super.serialize(payload);
         payload.putLong(mTargetId);
         payload.putLong(mSuid);
+        payload.putShort(mAudioSeq);
     }
 
     @Override
     public int getSize() {
-        return super.getSize() + 2 * Long.SIZE / Byte.SIZE;
+        return super.getSize() + 2 * Long.SIZE / Byte.SIZE + Short.SIZE/Byte.SIZE;
     }
 
     public long getTargetId() {
@@ -53,8 +56,18 @@ public class CallTerm extends ProtocolBase{
         return mSuid;
     }
 
+    public short getAudioSeq() {
+        return mAudioSeq;
+    }
+
+    public String toString(){
+        return "CallTerm:" + super.toString()
+                + ":" + Long.toHexString(mTargetId)
+                + ":" + Long.toHexString(mSuid);
+    }
     /** private members */
     long mTargetId;
     long mSuid;
+    short mAudioSeq;
 
 }

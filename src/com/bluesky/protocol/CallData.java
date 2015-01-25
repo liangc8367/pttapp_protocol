@@ -71,6 +71,13 @@ public class CallData extends ProtocolBase {
         return mAudioData;
     }
 
+    public String toString(){
+        return "CallData:" + super.toString()
+                + ":" + Long.toHexString(mTargetId)
+                + ":" + Long.toHexString(mSuid)
+                + ":" + Integer.toHexString(mAudioSeq);
+    }
+
     /** private members */
     long        mTargetId;
     long        mSuid;
