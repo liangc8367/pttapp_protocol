@@ -10,26 +10,24 @@ import java.nio.ByteBuffer;
 public class CallTermTest extends TestCase {
 
     public void testUnserialize() throws Exception {
-        long suid = 0xbadbeef001L;
-        long target = 0x123456789aL;
-        short seq = (short)0xd123;
-        short audioSeq = (short) 0x1199;
+        long target = 0xaabbccddL, source = 0xbababaL;
+        short seq = 0x1123;
 
-        CallTerm callTerm = new CallTerm(target, suid, audioSeq);
-        callTerm.setSequence(seq);
+        CallTerm callTerm = new CallTerm(target, source, seq);
 
         int sz = callTerm.getSize();
         ByteBuffer buf = ByteBuffer.allocate(sz);
 
         callTerm.serialize(buf);
 
+        buf.flip();
+
         // unserailize test
         assertEquals(ProtocolBase.PTYPE_CALL_TERM, ProtocolBase.peepType(buf));
         CallTerm bproto = (CallTerm) ProtocolFactory.getProtocol(buf);
+        assertEquals(target, bproto.getTarget());
+        assertEquals(source, bproto.getSource());
         assertEquals(seq, bproto.getSequence());
-        assertEquals(suid, bproto.getSuid());
-        assertEquals(target, bproto.getTargetId());
-        assertEquals(audioSeq, bproto.getAudioSeq());
 
         System.out.print(callTerm);
     }

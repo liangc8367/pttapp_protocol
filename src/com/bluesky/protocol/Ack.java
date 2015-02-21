@@ -9,11 +9,9 @@ public class Ack extends ProtocolBase {
     public static final short ACKTYPE_POSITIVE    = 1;
     public static final short ACKTYPE_NEGATIVE    = 0;
 
-    public static final int OFFSET_ACKTYPE      = 0;
-
     /** default ctor */
     private Ack(){
-        super(ProtocolBase.PTYPE_ACK);
+        super(0L, 0L, ProtocolBase.PTYPE_ACK, (short)0);
     }
 
     /** ctor, initialize from a received payload
@@ -27,16 +25,16 @@ public class Ack extends ProtocolBase {
     /** ctor, shall only be used to instance Ack for reply
      *
      * @param positiveAck
-     * @param origPayload
+     * @param origProto
      */
-    public Ack(boolean positiveAck, ByteBuffer origPayload){
-        super(ProtocolBase.PTYPE_ACK);
+    public Ack(long target, long source, short sequence, boolean positiveAck, ProtocolBase origProto){
+        super(target, source, ProtocolBase.PTYPE_ACK, sequence);
         if(positiveAck) {
             mAckType = ACKTYPE_POSITIVE;
         } else {
             mAckType = ACKTYPE_NEGATIVE;
         }
-        mOrigPacket = ProtocolFactory.getProtocol(origPayload);
+        mOrigProto = origProto;
     }
 
     @Override
@@ -44,38 +42,30 @@ public class Ack extends ProtocolBase {
         super.unserialize(payload);
         payload = super.getPayload();
         mAckType = payload.getShort();
-        payload.position(getMySize());
-        mOrigPacket = new ProtocolBase(payload.slice());
+        mOrigProto = ProtocolFactory.getProtocol(payload.slice());
     }
 
+    /** packet format:
+     *      base
+     *      ack-type: short
+     *      orig-packet
+     * @param payload, position will be changed afterwards
+     */
     @Override
     public void serialize(ByteBuffer payload){
         super.serialize(payload);
         payload.putShort(mAckType);
-        payload.putShort(mOrigPacket.getSequence());
-        payload.putShort(mOrigPacket.getType());
+        mOrigProto.serialize(payload);
     }
 
     @Override
     public int getSize(){
-        return super.getSize() * 2 + Short.SIZE / Byte.SIZE;
-    }
-
-    static private int getMySize(){
-        return Short.SIZE / Byte.SIZE;
-    }
-
-    public short getOrigSeq(){
-        return mOrigPacket.getSequence();
-    }
-
-    public short getOrigType(){
-        return mOrigPacket.getType();
+        return super.getSize() + mOrigProto.getSize() + Short.SIZE/Byte.SIZE;
     }
 
 
-    public void setAckType(short mAckType) {
-        this.mAckType = mAckType;
+    public ProtocolBase getOrigProto(){
+        return mOrigProto;
     }
 
     public short getAckType() {
@@ -83,16 +73,16 @@ public class Ack extends ProtocolBase {
     }
 
     public String toString(){
-        char c;
+        String c;
         if( mAckType == ACKTYPE_POSITIVE ){
-            c = 'P';
+            c = "Ack";
         } else {
-            c = 'N';
+            c = "Nack";
         }
-        return "ACK:" + super.toString() + ":" + c + ":"
-                + mOrigPacket.toStringDetail();
+        return super.toString() + ":" + c + ":"
+                + mOrigProto;
     }
 
     private short mAckType  = ACKTYPE_NEGATIVE;     /// ack type
-    private ProtocolBase    mOrigPacket = null;
+    private ProtocolBase    mOrigProto = null;
 }

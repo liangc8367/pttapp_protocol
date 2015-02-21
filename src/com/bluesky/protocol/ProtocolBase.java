@@ -5,11 +5,19 @@ import java.nio.ByteBuffer;
 
 /**
  * base of protocol packet
+ *  uint64_t: target
+ *  uint64_t: source
+ *  uint16_t: type
+ *  uint16_t: sequence
+ *
  * Created by liangc on 29/12/14.
  */
 public class ProtocolBase {
-    /** sequence # */
-    public static final int OFFSET_SEQ         = 0;
+    public static final int OFFSET_TARGET = 0;
+    public static final int OFFSET_SOURCE = 8;
+    public static final int OFFSET_TYPE = 16;
+    public static final int OFFSET_SEQUENCE = 24;
+
     /** packet type */
     public static final short PTYPE_INVALID      = 0;
     public static final short PTYPE_ACK          = 1;
@@ -18,15 +26,17 @@ public class ProtocolBase {
     public static final short PTYPE_CALL_DATA    = 5;
     public static final short PTYPE_CALL_TERM    = 6;
 
-    public static final int OFFSET_PTYPE       = 2;
 
     /** ctor, default */
-    public ProtocolBase(short type){
+    public ProtocolBase(long target, long source, short type, short sequence){
+        mTarget = target;
+        mSource = source;
         mType = type;
+        mSequence = sequence;
     }
 
-    public ProtocolBase(){
-        this(PTYPE_INVALID);
+    protected ProtocolBase(){
+        this(0L, 0L, PTYPE_INVALID, (short)0);
     }
 
     /** ctor using received payload
@@ -37,13 +47,15 @@ public class ProtocolBase {
     }
 
     /** unserialize from ByteBuffer
-     *
-     * @param payload
+     * @param payload data from offset 0 to payload.position.
+     *                If the payload was just serialized, caller shall call flip() first.
      */
     public void unserialize(ByteBuffer payload){
-        mPayload    = payload;
-        mSequence = mPayload.getShort(OFFSET_SEQ);
-        mType = mPayload.getShort(OFFSET_PTYPE);
+        mPayload = payload;
+        mTarget = mPayload.getLong();
+        mSource = mPayload.getLong();
+        mType = mPayload.getShort();
+        mSequence = mPayload.getShort();
     }
 
     /** serialize to ByteBuffer,
@@ -51,8 +63,10 @@ public class ProtocolBase {
      * @param payload, position will be changed afterwards
      */
     public void serialize(ByteBuffer payload){
-        payload.putShort(mSequence);
+        payload.putLong(mTarget);
+        payload.putLong(mSource);
         payload.putShort(mType);
+        payload.putShort(mSequence);
     }
 
     /** get size of the proto
@@ -68,7 +82,7 @@ public class ProtocolBase {
     }
 
     public static short peepType(ByteBuffer payload){
-        return payload.getShort(OFFSET_PTYPE);
+        return payload.getShort(OFFSET_TYPE);
     }
 
     /** get size of unserialized version */
@@ -80,22 +94,28 @@ public class ProtocolBase {
         return mSequence;
     }
 
+    public long getTarget(){
+        return mTarget;
+    }
+
+    public long getSource(){
+        return mSource;
+    }
+
+    /** return payload, except for the base part
+     *
+     * @return
+     */
     public ByteBuffer getPayload(){
         ByteBuffer payload = mPayload;
         payload.position(getMySize());
         return payload.slice();
     }
 
-    public void setSequence(short mSequence) {
-        this.mSequence = mSequence;
-    }
-
     public String toString (){
-        return Integer.toHexString(mSequence);
-    }
-
-    protected String toStringDetail(){
-        return toString() + ":" + Integer.toHexString(mType);
+        return Long.toHexString(mTarget) + ":" +
+               Long.toHexString(mSource) + "::" +
+               protoTypeName(mType) + ":" + mSequence;
     }
 
     /** private methods and members */
@@ -105,11 +125,38 @@ public class ProtocolBase {
 
     /** private methods and members */
     private int getMySize(){
-        return 2 * Short.SIZE / Byte.SIZE;
+        return (2 * Long.SIZE + 2 * Short.SIZE) / Byte.SIZE;
     }
 
-    private short mSequence = 0;
+    private String protoTypeName(short type){
+        String name;
+        switch(type){
+            case PTYPE_REGISTRATION:
+                name = "Registra";
+                break;
+            case PTYPE_ACK:
+                name = "Ack";
+                break;
+            case PTYPE_CALL_INIT:
+                name = "CallInit";
+                break;
+            case PTYPE_CALL_DATA:
+                name = "CallData";
+                break;
+            case PTYPE_CALL_TERM:
+                name = "CallTerm";
+            case PTYPE_INVALID:
+            default:
+                name = "Invalid";
+                break;
+        }
+        return name;
+    }
 
-    private short mType     = PTYPE_INVALID;
+    private long mTarget;
+    private long mSource;
+    private short mType;
+    private short mSequence;
+
     ByteBuffer    mPayload  = null;
 }

@@ -10,24 +10,24 @@ import java.nio.ByteBuffer;
 public class CallInitTest extends TestCase {
 
     public void testUnserialize() throws Exception {
-        long suid = 0xbadbeef001L;
-        long target = 0x123456789aL;
-        short seq = (short)0xd123;
+        long target = 0xaabbccddL, source = 0xbababaL;
+        short seq = 0x1123;
 
-        CallInit callInit = new CallInit(target, suid);
-        callInit.setSequence(seq);
+        CallInit callInit = new CallInit(target, source, seq);
 
         int sz = callInit.getSize();
         ByteBuffer buf = ByteBuffer.allocate(sz);
 
         callInit.serialize(buf);
 
+        buf.flip();
+
         // unserailize test
         assertEquals(ProtocolBase.PTYPE_CALL_INIT, ProtocolBase.peepType(buf));
         CallInit bproto = (CallInit) ProtocolFactory.getProtocol(buf);
+        assertEquals(target, bproto.getTarget());
+        assertEquals(source, bproto.getSource());
         assertEquals(seq, bproto.getSequence());
-        assertEquals(suid, bproto.getSuid());
-        assertEquals(target, bproto.getTargetId());
 
         System.out.print(callInit);
     }

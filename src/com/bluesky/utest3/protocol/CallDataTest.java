@@ -18,26 +18,25 @@ public class CallDataTest extends TestCase {
             rawAudio[i] = (byte)(i ^ 0x55);
         }
 
-        long suid = 0xbadbeef001L;
-        long target = 0x123456789aL;
-        short audioSeq  = (short) 0x321;
-        short seq = (short)0xd123;
+        long target = 0xaabbccddL, source = 0xbababaL;
+        short seq = 0x1123;
 
-        CallData callData = new CallData(target, suid, audioSeq, ByteBuffer.wrap(rawAudio));
-        callData.setSequence(seq);
+        CallData callData = new CallData(target, source, seq, ByteBuffer.wrap(rawAudio));
 
         int sz = callData.getSize();
         ByteBuffer buf = ByteBuffer.allocate(sz);
 
         callData.serialize(buf);
 
+        buf.flip();
+
         // unserailize test
         assertEquals(ProtocolBase.PTYPE_CALL_DATA, ProtocolBase.peepType(buf));
         CallData bproto = (CallData) ProtocolFactory.getProtocol(buf);
+        assertEquals(target, bproto.getTarget());
+        assertEquals(source, bproto.getSource());
         assertEquals(seq, bproto.getSequence());
-        assertEquals(suid, bproto.getSuid());
-        assertEquals(target, bproto.getTargetId());
-        assertEquals(audioSeq, bproto.getAudioSeq());
+        assertEquals(ProtocolBase.PTYPE_CALL_DATA, bproto.getType());
 
         ByteBuffer audioBuf = bproto.getAudioData();
         assertEquals(audioBuf.limit(), rawAudioSz);

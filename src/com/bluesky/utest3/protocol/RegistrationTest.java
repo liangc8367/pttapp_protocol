@@ -10,22 +10,21 @@ import java.nio.ByteBuffer;
 public class RegistrationTest extends TestCase {
 
     public void testUnserialize() throws Exception {
-        Registration reg = new Registration();
+        long target = 0xaabbccddL, source = 0xbababaL;
         short seq = 0x1123;
-        long suid = 0x0abcdef123456L;
-        reg.setSequence(seq);
-        reg.setSUID(suid);
+        Registration reg = new Registration(target, source, seq);
 
         int sz = reg.getSize();
         ByteBuffer buf = ByteBuffer.allocate(sz);
         reg.serialize(buf);
 
+        buf.flip();
+
         ProtocolBase proto = ProtocolFactory.getProtocol(buf);
+        assertEquals(proto.getTarget(), target);
+        assertEquals(proto.getSource(), source);
         assertEquals(ProtocolBase.PTYPE_REGISTRATION, proto.getType());
         assertEquals(proto.getSequence(), seq);
-
-        Registration bReg = (Registration)proto;
-        assertEquals(bReg.getSUID(), suid);
 
         System.out.print(reg.toString());
     }

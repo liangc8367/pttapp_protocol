@@ -13,33 +13,43 @@ import static org.junit.Assert.assertEquals;
 public class AckTest extends TestCase {
 
     public void testUnserialize() throws Exception {
-        Registration reg = new Registration();
-        short origSeq = 0x1123;
-        long origSuid = 0x0abcdef123456L;
-        reg.setSequence(origSeq);
-        reg.setSUID(origSuid);
+        long target = 0xaabbccddL, source = 0xbababaL;
+        short seq = 0x1123;
+
+        Registration reg = new Registration(target, source, seq);
 
         int origSz = reg.getSize();
         ByteBuffer origBuf = ByteBuffer.allocate(origSz);
         reg.serialize(origBuf);
 
-        Ack aProto = new Ack(false, origBuf);
-        short seq = 0x1122;
-        aProto.setSequence(seq);
-        aProto.setAckType(Ack.ACKTYPE_POSITIVE);
+        long t2 = 0x112233L, s2 = 0xffeeddcc123L;
+        short seq2 = 0x988;
+
+        Ack aProto = new Ack(t2, s2, seq2, false, reg);
 
         int sz = aProto.getSize();
         ByteBuffer buf = ByteBuffer.allocate(sz);
         aProto.serialize(buf);
 
+        buf.flip();
+
         // now, let's unserialize
         int type = ProtocolBase.peepType(buf);
         assertEquals(ProtocolBase.PTYPE_ACK, type);
-        Ack bProto = (Ack) ProtocolFactory.getProtocol(buf);
-        assertEquals(Ack.ACKTYPE_POSITIVE, bProto.getAckType());
-        assertEquals(aProto.getSequence(), seq);
-        assertEquals(aProto.getOrigSeq(), origSeq);
-        assertEquals(aProto.getOrigType(), ProtocolBase.PTYPE_REGISTRATION);
+        Ack bproto = (Ack) ProtocolFactory.getProtocol(buf);
+        assertEquals(t2, bproto.getTarget());
+        assertEquals(s2, bproto.getSource());
+        assertEquals(seq2, bproto.getSequence());
+        assertEquals(ProtocolBase.PTYPE_ACK, bproto.getType());
+        assertEquals(Ack.ACKTYPE_NEGATIVE, bproto.getAckType());
+
+        ProtocolBase origProto = bproto.getOrigProto();
+        assertEquals(origProto.getType(), ProtocolBase.PTYPE_REGISTRATION);
+        Registration reg2 = (Registration) origProto;
+
+        assertEquals(reg2.getTarget(), target);
+        assertEquals(reg2.getSource(), source);
+        assertEquals(reg2.getSequence(), seq);
 
         System.out.print(aProto);
     }

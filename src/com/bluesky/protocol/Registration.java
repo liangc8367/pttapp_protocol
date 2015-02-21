@@ -7,44 +7,12 @@ import java.nio.ByteBuffer;
  */
 public class Registration extends ProtocolBase {
 
-    public Registration(){
-        super(ProtocolBase.PTYPE_REGISTRATION);
+    public Registration(long target, long source, short sequence){
+        super(target, source, ProtocolBase.PTYPE_REGISTRATION, sequence);
     }
 
     public Registration(ByteBuffer payload){
         unserialize(payload);
     }
-
-    @Override
-    public void unserialize(ByteBuffer payload){
-        super.unserialize(payload);
-        payload = super.getPayload();
-        mSUID = payload.getLong();
-    }
-
-    @Override
-    public void serialize(ByteBuffer payload){
-        super.serialize(payload);
-        payload.putLong(mSUID);
-    }
-
-    public String toString(){
-        return super.toString() + ":" + Long.toHexString(mSUID);
-    }
-
-    @Override
-    public int getSize() {
-        return super.getSize() + Long.SIZE / Byte.SIZE;
-    }
-
-    public long getSUID() {
-        return mSUID;
-    }
-
-    public void setSUID(long mSUID) {
-        this.mSUID = mSUID;
-    }
-
-    private long    mSUID   = 0; // subscriber id
 
 }

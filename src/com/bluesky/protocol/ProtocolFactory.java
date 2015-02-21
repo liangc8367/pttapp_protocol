@@ -11,6 +11,7 @@ public class ProtocolFactory {
 
     /** unserialize protocol */
     static public ProtocolBase getProtocol(ByteBuffer payload){
+
         short protoType = ProtocolBase.peepType(payload);
         ProtocolBase proto;
         switch(protoType){
