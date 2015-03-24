@@ -145,6 +145,7 @@ public class ProtocolBase {
                 break;
             case PTYPE_CALL_TERM:
                 name = "CallTerm";
+                break;
             case PTYPE_INVALID:
             default:
                 name = "Invalid";
