@@ -39,6 +39,15 @@ public class ProtocolBase {
         this(0L, 0L, PTYPE_INVALID, (short)0);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ProtocolBase &&
+                mTarget == ((ProtocolBase)obj).mTarget &&
+                mSource == ((ProtocolBase)obj).mSource &&
+                mType == ((ProtocolBase)obj).mType &&
+                mSequence == ((ProtocolBase)obj).mSequence;
+    }
+
     /** ctor using received payload
      * @param payload
      */

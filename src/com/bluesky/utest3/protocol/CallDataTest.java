@@ -47,5 +47,15 @@ public class CallDataTest extends TestCase {
         }
 
         System.out.print(callData);
+
+        // equals()
+        byte[] rawAudio2 = new byte[rawAudioSz];
+
+        for(int i = 0; i < rawAudioSz; i++){
+            rawAudio2[i] = (byte)(i ^ 0x55);
+        }
+        CallData callData2 = new CallData(target, source, seq, (ByteBuffer)ByteBuffer.wrap(rawAudio2).flip());
+        assertEquals(true, callData2.equals(callData));
+
     }
 }

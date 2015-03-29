@@ -17,6 +17,19 @@ public class CallData extends ProtocolBase {
         mAudioData = audioData;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        boolean equal = false;
+        if( obj instanceof CallData){
+            if(super.equals(obj)){
+                if(mAudioData.equals(((CallData)obj).mAudioData)){
+                    equal = true;
+                }
+            }
+        }
+        return equal;
+    }
+
     public CallData(ByteBuffer payload){
         unserialize(payload);
     }
