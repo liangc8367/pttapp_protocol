@@ -12,6 +12,13 @@ import java.nio.ByteBuffer;
  * Created by liangc on 04/01/15.
  */
 public class CallData extends ProtocolBase {
+    /** ctor
+     *
+     * @param target
+     * @param source
+     * @param sequence
+     * @param audioData valid data from position to limit, i.e. size as remaining
+     */
     public CallData(long target, long source, short sequence, ByteBuffer audioData){
         super(target, source, PTYPE_CALL_DATA, sequence);
         mAudioData = audioData;
@@ -22,6 +29,7 @@ public class CallData extends ProtocolBase {
         boolean equal = false;
         if( obj instanceof CallData){
             if(super.equals(obj)){
+                mAudioData.rewind(); // if callData had serialized, then we have to rewind its audio-data.
                 if(mAudioData.equals(((CallData)obj).mAudioData)){
                     equal = true;
                 }
@@ -49,7 +57,7 @@ public class CallData extends ProtocolBase {
     @Override
     public int getSize() {
         return super.getSize()
-                + mAudioData.limit(); // mAudioData now in read-mode, i.e. limit is its # of elements
+                + mAudioData.remaining(); // mAudioData now in read-mode, i.e. limit is its # of elements
     }
 
     public ByteBuffer getAudioData() {

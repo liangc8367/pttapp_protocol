@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 public class CallDataTest extends TestCase {
 
     public void testUnserialize() throws Exception {
-        int rawAudioSz = 23;
+        int rawAudioSz = 50;
         final int SEED = 0x55;
         byte[] rawAudio = new byte[rawAudioSz];
 
@@ -20,10 +20,12 @@ public class CallDataTest extends TestCase {
 
         long target = 0xaabbccddL, source = 0xbababaL;
         short seq = 0x1123;
+        int offset = 20, length = 20;
 
-        CallData callData = new CallData(target, source, seq, ByteBuffer.wrap(rawAudio));
+        CallData callData = new CallData(target, source, seq, ByteBuffer.wrap(rawAudio, offset, length));
 
         int sz = callData.getSize();
+        assertEquals(40, sz);
         ByteBuffer buf = ByteBuffer.allocate(sz);
 
         callData.serialize(buf);
@@ -39,11 +41,11 @@ public class CallDataTest extends TestCase {
         assertEquals(ProtocolBase.PTYPE_CALL_DATA, bproto.getType());
 
         ByteBuffer audioBuf = bproto.getAudioData();
-        assertEquals(audioBuf.limit(), rawAudioSz);
-        byte[] audio = new byte[rawAudioSz];
+        assertEquals(audioBuf.remaining(), length);
+        byte[] audio = new byte[length];
         audioBuf.get(audio);
-        for(int i = 0; i < rawAudioSz; i++){
-            assertEquals(rawAudio[i], audio[i]);
+        for(int i = 0; i < length; i++){
+            assertEquals(rawAudio[i+offset], audio[i]);
         }
 
         System.out.print(callData);
